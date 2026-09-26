@@ -22,11 +22,9 @@ def add_movie(movie_list):
     title = input("Enter the movie title: ").strip()
     director = input("Enter the director's name: ").strip()
     
-    try:
-        year = int(input("Enter the release year: "))
-    except ValueError:
-        print("Invalid year. Defaulting to 2000.")
-        year = 2000
+    
+    year = int(input("Enter the release year: "))
+    
         
     status = input("Enter the status (watched/unwatched): ").strip().lower()
     watched = True if status == "watched" else False
@@ -49,20 +47,20 @@ def view_movies(movie_list):
 
 def count_watched_unwatched(movie_list):
     if not movie_list:
-        print("\nYour collection is empty.")
+        print("\nEmpty")
         return
         
-    watched_count = sum(1 for movie in movie_list if movie[3])
-    unwatched_count = len(movie_list) - watched_count   
+    watched_count = sum(1 for movie in movie_list if movie[3]) #in movie in movie_ list
+    unwatched_count = len(movie_list) - watched_count   # the length of the movie_list of the watch count subtratcted from watched count
     
-    print("\n=== Collection Statistics ===")
+    print("\nCollection")
     print(f"Watched Movies: {watched_count}")
     print(f"Unwatched Movies: {unwatched_count}")
 
 
 def find_movie(movie_list):
 
-    find_title = input("\nEnter the title of the movie to find: ").strip().lower()
+    find_title = input("\nEnter the title of the movie to find: ").strip().lower() #lowering lower case will be equal to inputs and to function other functions 
     found_movies = []
     
     for movie in movie_list:
