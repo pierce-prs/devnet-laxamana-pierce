@@ -1,39 +1,69 @@
+
 import random
 import requests
 
+def normalize_name(name):
 
-random_id = random.randint(1, 1025)
+    return "".join(char.lower() for char in name if char.isalnum())
 
 
-url = f"https://pokeapi.co/api/v2/pokemon/{random_id}"
+def play_game():
+    print("=== Who's That Pokémon? ===")
+    print("Guess the Pokémon using the clues!")
+    print("There are 5 rounds. Let's play!\n")
 
-response = requests.get(url)
+    score = 0
 
-if response.status_code == 200:
-    data = response.json()
-     
-    pokemon_name1 = data["name"].capitalize()
-    pokemon_name2 = data["name"].capitalize()
-    pokemon_name3= data["name"].capitalize()
-    pokemon_name4 = data["name"].capitalize()
-    pokemon_name5 = data["name"].capitalize()
-    height = data["height"]
-    weight = data["weight"]
+    
+    random_ids = random.sample(range(1, 1026), 5)
 
-    def play_game():
+    for round_number, random_id in enumerate(random_ids, start=1):
+        url = f"https://pokeapi.co/api/v2/pokemon/{random_id}"
 
-        print("=== Who's the Pokemon? ===")
+        try:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            data = response.json()
 
-        print(f"Pokémon 1: {pokemon_name1}") #Randomize 5 Pokemons
-        print(f"Pokémon 2: {pokemon_name2}")
-        print(f"Pokémon 3: {pokemon_name3}")
-        print(f"Pokémon 4: {pokemon_name4}")
-        print(f"Pokémon 5: {pokemon_name5}")
+        except requests.RequestException:
+            print(f"Round {round_number}: Could not load Pokémon.")
+            continue
 
-        print(f"ID: {random_id}")
-        print(f"Height: {height}, Weight: {weight}")
+        pokemon_name = data["name"]
+        types = ", ".join(
+            pokemon_type["type"]["name"].capitalize()
+            for pokemon_type in data["types"]
+        )
 
-        print(input("Guess The Pokemon: "))
- 
+       
+        height = data["height"] / 10
+        weight = data["weight"] / 10
+
+        
+        print(f"Type: {types}")
+        print(f"Height: {height:.1f} meters")
+        print(f"Weight: {weight:.1f} kilograms")
+
+        guess = input("Guess the Pokémon: ").strip()
+
+        if normalize_name(guess) == normalize_name(pokemon_name):
+            print("Correct! You got it! 🎉")
+            score += 1
+        else:
+            correct_name = pokemon_name.replace("-", " ").title()
+            print(f"Wrong! The Pokémon was {correct_name}.")
+
+        print(f"Score: {score}\n")
+
+    print("=== Game Over! ===")
+    print(f"Your final score: {score}/5")
+
+    if score == 5:
+        print("Perfect score! Pokémon Master!")
+    elif score >= 3:
+        print("Great job, Trainer!")
+    else:
+        print("Keep practicing, Trainer!")
+
 
 play_game()
