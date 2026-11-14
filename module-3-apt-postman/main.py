@@ -47,7 +47,7 @@ def play_game():
         guess = input("Guess the Pokémon: ").strip()
 
         if normalize_name(guess) == normalize_name(pokemon_name):
-            print("Correct! You got it! 🎉")
+            print("Correct! You got it!")
             score += 1
         else:
             correct_name = pokemon_name.replace("-", " ").title()
